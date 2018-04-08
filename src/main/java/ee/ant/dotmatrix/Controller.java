@@ -65,7 +65,24 @@ public class Controller {
             // TODO 4 segment
         } else {
             // it is 1 segment symbol
-            // TODO single segment
+            createMatrix(bytes.length, 8);
+            fillMatrixWithDots(bytes, 8);
+        }
+    }
+
+    /**
+     * Draw symbol from bytes array
+     * @param bytes
+     */
+    private void fillMatrixWithDots(byte[] bytes, int rows) {
+        for (int i=0; i<bytes.length; i++) {
+            byte column = bytes[i];
+            for (int j=0; j<rows; j++) {
+                if ((column & 1) == 1) {
+                    dotMatrix.getChildren().get(i*8 + j).getStyleClass().add("buttonOn");
+                }
+                column = (byte) (column >> 1);
+            }
         }
     }
 
@@ -76,8 +93,8 @@ public class Controller {
      */
     private void createMatrix (int x, int y) {
         dotMatrix.getChildren().clear();
-        for (int i=0; i<=x; i++) {
-            for (int j=0; j<=y; j++) {
+        for (int i=0; i<x; i++) {
+            for (int j=0; j<y; j++) {
                 Button btn = new Button();
                 btn.setId(i + "," + j);
                 btn.setMinSize(16.0, 16.0);
