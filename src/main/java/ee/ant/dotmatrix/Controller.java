@@ -1,5 +1,6 @@
 package ee.ant.dotmatrix;
 
+import ee.ant.dotmatrix.model.Segment;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,26 +29,68 @@ public class Controller {
     @FXML
     private Button drawButton;
 
+    private Segment[] segments;
+
     @FXML
     private void initialize() {
 
+
         // Handle 5x8 radio button event
-        rbutton58.setOnAction(event -> createMatrix(5,8));
+        rbutton58.setOnAction(event -> {
+            segments = new Segment[]{new Segment(5)};
+            drawSegments();
+        });
 
         // Handle 6x8 radio button event
-        rbutton68.setOnAction(event -> createMatrix(6,8));
+        rbutton68.setOnAction(event -> {
+            segments = new Segment[]{new Segment(6)};
+            drawSegments();
+        });
 
         // Handle 7x8 radio button event
-        rbutton78.setOnAction(event -> createMatrix(7,8));
+        rbutton78.setOnAction(event -> {
+            segments = new Segment[]{new Segment(7)};
+            drawSegments();
+        });
 
         // Handle 8x8 radio button event
-        rbutton88.setOnAction(event -> createMatrix(8,8));
+        rbutton88.setOnAction(event -> {
+            segments = new Segment[]{new Segment(8)};
+            drawSegments();
+        });
 
         // Handle draw button event
         drawButton.setOnAction(event -> parseHexString(hexString.getText()));
 
         // default is 5x8 matrix
-        createMatrix(5,8);
+        segments = new Segment[]{new Segment(5)};
+        drawSegments();
+    }
+
+    /**
+     * Draw all segments
+     */
+    private void drawSegments() {
+        dotMatrix.getChildren().clear();
+        for (Segment segment : segments) {
+            for (int i = 0; i < segment.getColumns(); i++) {
+                for (int j = 0; j < 8; j++) {
+                    Button btn = new Button();
+                    btn.setMinSize(16.0, 16.0);
+                    btn.setMaxSize(16.0, 16.0);
+                    btn.setOnAction(((ActionEvent click) -> {
+                        ObservableList classes = btn.getStyleClass();
+                        if (classes.size() == 1) {
+                            btn.getStyleClass().add("buttonOn");
+                        } else {
+                            btn.getStyleClass().remove(1);
+                        }
+                        generateHexString();
+                    }));
+                    dotMatrix.add(btn, i, j);
+                }
+            }
+        }
     }
 
     private void parseHexString(String text) {
@@ -55,10 +98,10 @@ public class Controller {
         // 0x00, 0x07, 0x05, 0x07, 0x00
         // create corresponding byte[] array
         String binaryString = text.replace("{", "")
-                                  .replace("}", "")
-                                  .replace("0x", "")
-                                  .replace(",", "")
-                                  .replace(" ", "");
+                .replace("}", "")
+                .replace("0x", "")
+                .replace(",", "")
+                .replace(" ", "");
         byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);
 
         if (bytes.length > 8) {
@@ -66,53 +109,54 @@ public class Controller {
             // TODO 4 segment
         } else {
             // it is 1 segment symbol
-            createMatrix(bytes.length, 8);
+            segments = new Segment[]{new Segment(bytes.length)};
             fillMatrixWithDots(bytes, 8);
         }
     }
 
     /**
      * Draw symbol from bytes array
+     *
      * @param bytes byte array that encodes symbol
      */
     private void fillMatrixWithDots(byte[] bytes, int rows) {
-        for (int i=0; i<bytes.length; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             byte column = bytes[i];
-            for (int j=0; j<rows; j++) {
+            for (int j = 0; j < rows; j++) {
                 if ((column & 1) == 1) {
-                    dotMatrix.getChildren().get(i*8 + j).getStyleClass().add("buttonOn");
+                    dotMatrix.getChildren().get(i * 8 + j).getStyleClass().add("buttonOn");
                 }
                 column = (byte) (column >> 1);
             }
         }
     }
 
-    /**
-     * Creates empty matrix of buttons
-     * @param x size X
-     * @param y size Y
-     */
-    private void createMatrix (int x, int y) {
-        dotMatrix.getChildren().clear();
-        for (int i=0; i<x; i++) {
-            for (int j=0; j<y; j++) {
-                Button btn = new Button();
-                btn.setId(i + "," + j);
-                btn.setMinSize(16.0, 16.0);
-                btn.setMaxSize(16.0, 16.0);
-                btn.setOnAction(((ActionEvent click) -> {
-                    ObservableList classes = btn.getStyleClass();
-                    if (classes.size() == 1) {
-                        btn.getStyleClass().add("buttonOn");
-                    } else {
-                        btn.getStyleClass().remove(1);
-                    }
-                    generateHexString();
-                }));
-                dotMatrix.add(btn, i, j);
-            }
-        }
-    }
+//    /**
+//     * Creates empty matrix of buttons
+//     * @param x size X
+//     * @param y size Y
+//     */
+//    private void createMatrix (int x, int y) {
+//        dotMatrix.getChildren().clear();
+//        for (int i=0; i<x; i++) {
+//            for (int j=0; j<y; j++) {
+//                Button btn = new Button();
+//                btn.setId(i + "," + j);
+//                btn.setMinSize(16.0, 16.0);
+//                btn.setMaxSize(16.0, 16.0);
+//                btn.setOnAction(((ActionEvent click) -> {
+//                    ObservableList classes = btn.getStyleClass();
+//                    if (classes.size() == 1) {
+//                        btn.getStyleClass().add("buttonOn");
+//                    } else {
+//                        btn.getStyleClass().remove(1);
+//                    }
+//                    generateHexString();
+//                }));
+//                dotMatrix.add(btn, i, j);
+//            }
+//        }
+//    }
 
     /**
      * Create font hex string and display it
@@ -121,7 +165,7 @@ public class Controller {
         StringBuilder hexOut = new StringBuilder();
         ObservableList<Node> buttons = dotMatrix.getChildren();
         byte element = 0; // initial byte
-        for (int i=0; i < buttons.size(); i++) {
+        for (int i = 0; i < buttons.size(); i++) {
             Node button = buttons.get(i);
             // reset element each 8 bits
             if (i % 8 == 0) {
@@ -139,6 +183,6 @@ public class Controller {
             }
         }
         String out = hexOut.toString();
-        hexString.setText("{ " + out.substring(0, out.length()-1) + " }");
+        hexString.setText("{ " + out.substring(0, out.length() - 1) + " }");
     }
 }
