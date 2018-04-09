@@ -3,6 +3,7 @@ package ee.ant.dotmatrix;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
@@ -72,7 +73,7 @@ public class Controller {
 
     /**
      * Draw symbol from bytes array
-     * @param bytes
+     * @param bytes byte array that encodes symbol
      */
     private void fillMatrixWithDots(byte[] bytes, int rows) {
         for (int i=0; i<bytes.length; i++) {
@@ -100,16 +101,44 @@ public class Controller {
                 btn.setMinSize(16.0, 16.0);
                 btn.setMaxSize(16.0, 16.0);
                 btn.setOnAction(((ActionEvent click) -> {
-
                     ObservableList classes = btn.getStyleClass();
                     if (classes.size() == 1) {
                         btn.getStyleClass().add("buttonOn");
                     } else {
                         btn.getStyleClass().remove(1);
                     }
+                    generateHexString();
                 }));
                 dotMatrix.add(btn, i, j);
             }
         }
+    }
+
+    /**
+     * Create font hex string and display it
+     */
+    private void generateHexString() {
+        StringBuilder hexOut = new StringBuilder();
+        ObservableList<Node> buttons = dotMatrix.getChildren();
+        byte element = 0; // initial byte
+        for (int i=0; i < buttons.size(); i++) {
+            Node button = buttons.get(i);
+            // reset element each 8 bits
+            if (i % 8 == 0) {
+                element = 0;
+            }
+
+            // set bit of element if corresponding button has 2 styles (i.e. pushed)
+            if (button.getStyleClass().size() == 2) {
+                element = (byte) (element | (1 << (i % 8)));
+            }
+
+            // append element to array at the end
+            if ((i % 8) == 7) {
+                hexOut.append("0x").append(String.format("%02x", element)).append(",");
+            }
+        }
+        String out = hexOut.toString();
+        hexString.setText("{ " + out.substring(0, out.length()-1) + " }");
     }
 }
