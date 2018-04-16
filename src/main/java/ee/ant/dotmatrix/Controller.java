@@ -41,7 +41,6 @@ public class Controller {
     @FXML
     private void initialize() {
 
-
         // Handle 5x8 radio button event
         rbutton58.setOnAction(event -> createEmptyMatrix(8,5));
 
@@ -138,7 +137,6 @@ public class Controller {
                 .replace(",", "")
                 .replace(" ", "");
         byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);
-
         fillMatrixWithDots(bytes);
     }
 
@@ -160,12 +158,11 @@ public class Controller {
             createEmptyMatrix(8, bytes.length );
             drawSegment(bytes);
         }
-
     }
 
     /**
      * Draw single segment
-     * @param bytes
+     * @param bytes array of hex for single element
      */
     private void drawSegment(byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
@@ -178,7 +175,6 @@ public class Controller {
             }
         }
     }
-
 
     /**
      * Draw segment based on offset. Top left has 0,0 and bottom right 8, number of columns
@@ -196,9 +192,7 @@ public class Controller {
                 column = (byte) (column >> 1);
             }
         }
-
     }
-
 
     /**
      * Create font hex string and display it
