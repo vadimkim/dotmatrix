@@ -1,10 +1,8 @@
 package ee.ant.dotmatrix;
 
-import ee.ant.dotmatrix.model.Segment;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
@@ -13,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.Arrays;
 
 public class Controller {
 
@@ -38,8 +37,6 @@ public class Controller {
     private TextField hexString;
     @FXML
     private Button drawButton;
-
-    private Segment[] segments;
 
     @FXML
     private void initialize() {
@@ -100,7 +97,6 @@ public class Controller {
                 dotMatrix.add(btn, i, j);
             }
         }
-        // TODO draw lines between segments
         if (rows == 16) {
             drawLines (columns);
         }
@@ -128,6 +124,10 @@ public class Controller {
         }
     }
 
+    /**
+     * Parse hex string and draw symbol
+     * @param text - line with symbol hex code. Either for single segment or 4 segments
+     */
     private void parseHexString(String text) {
         // Assume that hex string contains words separated by comas like
         // 0x00, 0x07, 0x05, 0x07, 0x00
@@ -139,14 +139,7 @@ public class Controller {
                 .replace(" ", "");
         byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);
 
-        if (bytes.length > 8) {
-            // it is 4x segment symbol
-            // TODO 4 segment
-        } else {
-            // it is 1 segment symbol
-            segments = new Segment[]{new Segment(bytes.length)};
-            fillMatrixWithDots(bytes, 8);
-        }
+        fillMatrixWithDots(bytes);
     }
 
     /**
@@ -154,10 +147,30 @@ public class Controller {
      *
      * @param bytes byte array that encodes symbol
      */
-    private void fillMatrixWithDots(byte[] bytes, int rows) {
+    private void fillMatrixWithDots(byte[] bytes) {
+        if (bytes.length > 8) {
+            // there are 4 segments
+            createEmptyMatrix(16, bytes.length / 2);
+            drawSegment(0,0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
+            drawSegment(0,1, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
+         //   drawSegment(1,0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
+         //   drawSegment(1,1, Arrays.copyOfRange(bytes, 3 * bytes.length / 4,  bytes.length));
+        } else {
+            // there is only one segment
+            createEmptyMatrix(8, bytes.length );
+            drawSegment(bytes);
+        }
+
+    }
+
+    /**
+     * Draw single segment
+     * @param bytes
+     */
+    private void drawSegment(byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
             byte column = bytes[i];
-            for (int j = 0; j < rows; j++) {
+            for (int j = 0; j < 8; j++) {
                 if ((column & 1) == 1) {
                     dotMatrix.getChildren().get(i * 8 + j).getStyleClass().add("buttonOn");
                 }
@@ -166,10 +179,33 @@ public class Controller {
         }
     }
 
+
+    /**
+     * Draw segment based on coordinates. Top left has 0,0 and bottom right 1,1
+     * @param rows - segment x position
+     * @param columns - segment y position
+     * @param bytes - segment data
+     */
+    private void drawSegment(int rows, int columns, byte[] bytes) {
+        // TODO segmentation
+//        for (int i = 0; i < bytes.length; i++) {
+//            byte column = bytes[i];
+//            for (int j = 0; j < 16; j++) {
+//                if ((column & 1) == 1) {
+//                    dotMatrix.getChildren().get(i*(8 + 8*rows) + j + column*16).getStyleClass().add("buttonOn");
+//                }
+//                column = (byte) (column >> 1);
+//            }
+//        }
+
+    }
+
+
     /**
      * Create font hex string and display it
      */
     private void generateHexString() {
+        // TODO refactor using segments
         StringBuilder hexOut = new StringBuilder();
         ObservableList<Node> buttons = dotMatrix.getChildren();
         byte element = 0; // initial byte
