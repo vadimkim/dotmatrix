@@ -151,10 +151,10 @@ public class Controller {
         if (bytes.length > 8) {
             // there are 4 segments
             createEmptyMatrix(16, bytes.length / 2);
-            drawSegment(0,0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
-            drawSegment(0,1, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
-         //   drawSegment(1,0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
-         //   drawSegment(1,1, Arrays.copyOfRange(bytes, 3 * bytes.length / 4,  bytes.length));
+           drawSegment(0,0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
+           drawSegment(0,bytes.length / 4, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
+           drawSegment(8,0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
+           drawSegment(8,bytes.length / 4, Arrays.copyOfRange(bytes, 3 * bytes.length / 4,  bytes.length));
         } else {
             // there is only one segment
             createEmptyMatrix(8, bytes.length );
@@ -181,22 +181,21 @@ public class Controller {
 
 
     /**
-     * Draw segment based on coordinates. Top left has 0,0 and bottom right 1,1
-     * @param rows - segment x position
-     * @param columns - segment y position
+     * Draw segment based on offset. Top left has 0,0 and bottom right 8, number of columns
+     * @param offsetCols - columns offset
+     * @param offsetRaws - raws offset
      * @param bytes - segment data
      */
-    private void drawSegment(int rows, int columns, byte[] bytes) {
-        // TODO segmentation
-//        for (int i = 0; i < bytes.length; i++) {
-//            byte column = bytes[i];
-//            for (int j = 0; j < 16; j++) {
-//                if ((column & 1) == 1) {
-//                    dotMatrix.getChildren().get(i*(8 + 8*rows) + j + column*16).getStyleClass().add("buttonOn");
-//                }
-//                column = (byte) (column >> 1);
-//            }
-//        }
+    private void drawSegment(int offsetCols, int offsetRaws, byte[] bytes) {
+        for (int i = 0; i < bytes.length; i++) {
+            byte column = bytes[i];
+            for (int j = offsetCols; j < offsetCols + 8; j++) {
+                if ((column & 1) == 1) {
+                    dotMatrix.getChildren().get(i*16 + j + offsetRaws*16).getStyleClass().add("buttonOn");
+                }
+                column = (byte) (column >> 1);
+            }
+        }
 
     }
 
