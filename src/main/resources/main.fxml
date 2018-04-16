@@ -66,10 +66,10 @@
                   <RadioButton fx:id="rbutton68" layoutX="70.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="59.0" text="6x8" toggleGroup="$DisplaySize" />
                   <RadioButton fx:id="rbutton78" layoutX="136.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="51.0" text="7x8" toggleGroup="$DisplaySize" />
                   <RadioButton fx:id="rbutton88" layoutX="206.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="53.0" text="8x8" toggleGroup="$DisplaySize" />
-                  <RadioButton fx:id="rbutton1016" layoutX="268.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="56.0" text="10x16" toggleGroup="$DisplaySize" />
-                  <RadioButton fx:id="rbutton1216" layoutX="336.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="62.0" text="12x16" toggleGroup="$DisplaySize" />
-                  <RadioButton fx:id="rbutton1416" layoutX="403.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="61.0" text="14x16" toggleGroup="$DisplaySize" />
-                  <RadioButton fx:id="rbutton1616" layoutX="466.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="70.0" text="16x16" toggleGroup="$DisplaySize" />
+                  <RadioButton fx:id="rbutton1016" layoutX="268.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="70.0" text="10x16" toggleGroup="$DisplaySize" />
+                  <RadioButton fx:id="rbutton1216" layoutX="340.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="77.0" text="12x16" toggleGroup="$DisplaySize" />
+                  <RadioButton fx:id="rbutton1416" layoutX="413.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="76.0" text="14x16" toggleGroup="$DisplaySize" />
+                  <RadioButton fx:id="rbutton1616" layoutX="485.0" layoutY="-3.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="70.0" text="16x16" toggleGroup="$DisplaySize" />
                </children>
             </Group>
             <GridPane id="PixelMatrix" fx:id="dotMatrix" gridLinesVisible="true" layoutX="8.0" layoutY="55.0">

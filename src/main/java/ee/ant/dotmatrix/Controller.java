@@ -4,11 +4,13 @@ import ee.ant.dotmatrix.model.Segment;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -44,49 +46,45 @@ public class Controller {
 
 
         // Handle 5x8 radio button event
-        rbutton58.setOnAction(event -> createEmptyMatrix(5));
+        rbutton58.setOnAction(event -> createEmptyMatrix(8,5));
 
         // Handle 6x8 radio button event
-        rbutton68.setOnAction(event -> createEmptyMatrix(6));
+        rbutton68.setOnAction(event -> createEmptyMatrix(8,6));
 
         // Handle 7x8 radio button event
-        rbutton78.setOnAction(event -> createEmptyMatrix(7));
+        rbutton78.setOnAction(event -> createEmptyMatrix(8,7));
 
         // Handle 8x8 radio button event
-        rbutton88.setOnAction(event -> createEmptyMatrix(8));
+        rbutton88.setOnAction(event -> createEmptyMatrix(8,8));
 
         // Handle 10x16 radio button event
-        rbutton1016.setOnAction(event -> createEmptyMatrix(10));
+        rbutton1016.setOnAction(event -> createEmptyMatrix(16,10));
 
         // Handle 12x16 radio button event
-        rbutton1216.setOnAction(event -> createEmptyMatrix(12));
+        rbutton1216.setOnAction(event -> createEmptyMatrix(16,12));
 
         // Handle 14x16 radio button event
-        rbutton1416.setOnAction(event -> createEmptyMatrix(14));
+        rbutton1416.setOnAction(event -> createEmptyMatrix(16,14));
 
         // Handle 16x16 radio button event
-        rbutton1616.setOnAction(event -> createEmptyMatrix(16));
+        rbutton1616.setOnAction(event -> createEmptyMatrix(16,16));
 
         // Handle draw button event
         drawButton.setOnAction(event -> parseHexString(hexString.getText()));
 
         // default is 5x8 matrix
-        createEmptyMatrix(5);
+        createEmptyMatrix(8,5);
     }
 
     /**
-     * Draw all segments
+     * Draw empty matrix and register draw events
+     * @param rows number of raws
+     * @param columns number of columns
      */
-    private void drawSegments() {
+    private void createEmptyMatrix(int rows, int columns) {
         dotMatrix.getChildren().clear();
-        int x = segments[0].getColumns();
-        int y = 8;
-        if (segments.length != 1) {
-            x = 2 * x;
-            y = 2 * y;
-        }
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
+        for (int i = 0; i < columns; i++) {
+            for (int j = 0; j < rows; j++) {
                 Button btn = new Button();
                 btn.setMinSize(16.0, 16.0);
                 btn.setMaxSize(16.0, 16.0);
@@ -102,7 +100,32 @@ public class Controller {
                 dotMatrix.add(btn, i, j);
             }
         }
-        // TODO extend for more segments
+        // TODO draw lines between segments
+        if (rows == 16) {
+            drawLines (columns);
+        }
+    }
+
+    /**
+     * Draw vertical and horizontal lines
+     * @param columns number of columns
+     */
+    private void drawLines(int columns) {
+        // Draw horizontal line
+        for (int i = 0; i < columns ; i++) {
+            Button btn = (Button) dotMatrix.getChildren().get(2*i*8 + 7);
+            btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,0))));
+        }
+
+        // Draw vertical line
+        for (int i = 0; i < 16 ; i++) {
+            Button btn = (Button) dotMatrix.getChildren().get(i + 8*columns);
+            if (i == 7) { // One button has both bottom and left lines
+                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,1))));
+            } else {
+                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,0,1))));
+            }
+        }
     }
 
     private void parseHexString(String text) {
@@ -141,32 +164,6 @@ public class Controller {
                 column = (byte) (column >> 1);
             }
         }
-    }
-
-    /**
-     * Creates empty matrix of buttons and display it
-     *
-     * @param x size X
-     */
-    private void createEmptyMatrix(int x) {
-        if (x <= 8) {
-            segments = new Segment[]{new Segment(x)};
-        } else {
-            switch (x) {
-                case 10:
-                    segments = new Segment[]{new Segment(5), new Segment(5), new Segment(5), new Segment(5)};
-                    break;
-                case 12:
-                    segments = new Segment[]{new Segment(6), new Segment(6), new Segment(6), new Segment(6)};
-                    break;
-                case 14:
-                    segments = new Segment[]{new Segment(7), new Segment(7), new Segment(7), new Segment(7)};
-                    break;
-                case 16:
-                    segments = new Segment[]{new Segment(8), new Segment(8), new Segment(8), new Segment(8)};
-            }
-        }
-        drawSegments();
     }
 
     /**
