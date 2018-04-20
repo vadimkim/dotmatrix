@@ -11,7 +11,9 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
 import javax.xml.bind.DatatypeConverter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Controller {
 
@@ -42,39 +44,40 @@ public class Controller {
     private void initialize() {
 
         // Handle 5x8 radio button event
-        rbutton58.setOnAction(event -> createEmptyMatrix(8,5));
+        rbutton58.setOnAction(event -> createEmptyMatrix(8, 5));
 
         // Handle 6x8 radio button event
-        rbutton68.setOnAction(event -> createEmptyMatrix(8,6));
+        rbutton68.setOnAction(event -> createEmptyMatrix(8, 6));
 
         // Handle 7x8 radio button event
-        rbutton78.setOnAction(event -> createEmptyMatrix(8,7));
+        rbutton78.setOnAction(event -> createEmptyMatrix(8, 7));
 
         // Handle 8x8 radio button event
-        rbutton88.setOnAction(event -> createEmptyMatrix(8,8));
+        rbutton88.setOnAction(event -> createEmptyMatrix(8, 8));
 
         // Handle 10x16 radio button event
-        rbutton1016.setOnAction(event -> createEmptyMatrix(16,10));
+        rbutton1016.setOnAction(event -> createEmptyMatrix(16, 10));
 
         // Handle 12x16 radio button event
-        rbutton1216.setOnAction(event -> createEmptyMatrix(16,12));
+        rbutton1216.setOnAction(event -> createEmptyMatrix(16, 12));
 
         // Handle 14x16 radio button event
-        rbutton1416.setOnAction(event -> createEmptyMatrix(16,14));
+        rbutton1416.setOnAction(event -> createEmptyMatrix(16, 14));
 
         // Handle 16x16 radio button event
-        rbutton1616.setOnAction(event -> createEmptyMatrix(16,16));
+        rbutton1616.setOnAction(event -> createEmptyMatrix(16, 16));
 
         // Handle draw button event
         drawButton.setOnAction(event -> parseHexString(hexString.getText()));
 
         // default is 5x8 matrix
-        createEmptyMatrix(8,5);
+        createEmptyMatrix(8, 5);
     }
 
     /**
      * Draw empty matrix and register draw events
-     * @param rows number of raws
+     *
+     * @param rows    number of raws
      * @param columns number of columns
      */
     private void createEmptyMatrix(int rows, int columns) {
@@ -97,34 +100,36 @@ public class Controller {
             }
         }
         if (rows == 16) {
-            drawLines (columns);
+            drawLines(columns);
         }
     }
 
     /**
      * Draw vertical and horizontal lines
+     *
      * @param columns number of columns
      */
     private void drawLines(int columns) {
         // Draw horizontal line
-        for (int i = 0; i < columns ; i++) {
-            Button btn = (Button) dotMatrix.getChildren().get(2*i*8 + 7);
-            btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,0))));
+        for (int i = 0; i < columns; i++) {
+            Button btn = (Button) dotMatrix.getChildren().get(2 * i * 8 + 7);
+            btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
         }
 
         // Draw vertical line
-        for (int i = 0; i < 16 ; i++) {
-            Button btn = (Button) dotMatrix.getChildren().get(i + 8*columns);
+        for (int i = 0; i < 16; i++) {
+            Button btn = (Button) dotMatrix.getChildren().get(i + 8 * columns);
             if (i == 7) { // One button has both bottom and left lines
-                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,1,1))));
+                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 1))));
             } else {
-                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0,0,0,1))));
+                btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 0, 1))));
             }
         }
     }
 
     /**
      * Parse hex string and draw symbol
+     *
      * @param text - line with symbol hex code. Either for single segment or 4 segments
      */
     private void parseHexString(String text) {
@@ -149,19 +154,20 @@ public class Controller {
         if (bytes.length > 8) {
             // there are 4 segments
             createEmptyMatrix(16, bytes.length / 2);
-           drawSegment(0,0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
-           drawSegment(0,bytes.length / 4, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
-           drawSegment(8,0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
-           drawSegment(8,bytes.length / 4, Arrays.copyOfRange(bytes, 3 * bytes.length / 4,  bytes.length));
+            drawSegment(0, 0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
+            drawSegment(0, bytes.length / 4, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
+            drawSegment(8, 0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
+            drawSegment(8, bytes.length / 4, Arrays.copyOfRange(bytes, 3 * bytes.length / 4, bytes.length));
         } else {
             // there is only one segment
-            createEmptyMatrix(8, bytes.length );
+            createEmptyMatrix(8, bytes.length);
             drawSegment(bytes);
         }
     }
 
     /**
      * Draw single segment
+     *
      * @param bytes array of hex for single element
      */
     private void drawSegment(byte[] bytes) {
@@ -178,16 +184,17 @@ public class Controller {
 
     /**
      * Draw segment based on offset. Top left has 0,0 and bottom right 8, number of columns
-     * @param offsetCols - columns offset
-     * @param offsetRaws - raws offset
-     * @param bytes - segment data
+     *
+     * @param offsetCol - column offset
+     * @param offsetRaw - raw offset
+     * @param bytes      - segment data
      */
-    private void drawSegment(int offsetCols, int offsetRaws, byte[] bytes) {
+    private void drawSegment(int offsetCol, int offsetRaw, byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
             byte column = bytes[i];
-            for (int j = offsetCols; j < offsetCols + 8; j++) {
+            for (int j = offsetCol; j < offsetCol + 8; j++) {
                 if ((column & 1) == 1) {
-                    dotMatrix.getChildren().get(i*16 + j + offsetRaws*16).getStyleClass().add("buttonOn");
+                    dotMatrix.getChildren().get(i * 16 + j + offsetRaw * 16).getStyleClass().add("buttonOn");
                 }
                 column = (byte) (column >> 1);
             }
@@ -198,12 +205,52 @@ public class Controller {
      * Create font hex string and display it
      */
     private void generateHexString() {
-        // TODO refactor using segments
         StringBuilder hexOut = new StringBuilder();
-        ObservableList<Node> buttons = dotMatrix.getChildren();
+
+        if (dotMatrix.getChildren().size() > 64) {
+            // Multi- segment
+            hexOut.append(readSegment(0,0));
+            hexOut.append(readSegment(dotMatrix.getChildren().size() / 32, 0));
+            hexOut.append(readSegment(0, 8));
+            hexOut.append(readSegment(dotMatrix.getChildren().size() / 32, 8));
+        } else {
+            // Single segment
+            hexOut.append(getSegmentHex(dotMatrix.getChildren()));
+        }
+
+        String out = hexOut.toString();
+        hexString.setText("{ " + out.substring(0, out.length() - 1) + " }");
+    }
+
+    /**
+     * Create hex string for selected segment
+     * @param offsetCol column offset
+     * @param offsetRaw raw offset
+     * @return hex string for the segment
+     */
+    private char[] readSegment(int offsetCol, int offsetRaw) {
+
+        List<Node> segment = new ArrayList<>();
+        for (int i=offsetCol; i < offsetCol + dotMatrix.getChildren().size()/32; i++) {
+            for (int j=offsetRaw; j < offsetRaw + 8; j++) {
+                segment.add(dotMatrix.getChildren().get(i*16 + j));
+            }
+        }
+
+        return getSegmentHex(segment).toCharArray();
+    }
+
+    /**
+     * Return hex string for single segment 8*columns
+     * @param segment buttons node list in a segment
+     * @return hex string
+     */
+    private String getSegmentHex(List<Node> segment) {
+        StringBuilder hexOut = new StringBuilder();
+        // Single segment code
         byte element = 0; // initial byte
-        for (int i = 0; i < buttons.size(); i++) {
-            Node button = buttons.get(i);
+        for (int i = 0; i < segment.size(); i++) {
+            Node button = segment.get(i);
             // reset element each 8 bits
             if (i % 8 == 0) {
                 element = 0;
@@ -219,7 +266,7 @@ public class Controller {
                 hexOut.append("0x").append(String.format("%02x", element)).append(",");
             }
         }
-        String out = hexOut.toString();
-        hexString.setText("{ " + out.substring(0, out.length() - 1) + " }");
+        return hexOut.toString();
     }
+
 }
