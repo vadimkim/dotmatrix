@@ -6,5 +6,5 @@ Main features:
 - can parse font, provided as hex string from 5x8 to 16x16 pixel size
 
 # Example sreenshots
-![alt text](https://github.com/vadimkim/dotmatrix/tree/master/images/single_segment.png "single segment")
-![alt text](https://github.com/vadimkim/dotmatrix/tree/master/images/multi_segment.png "multi segment")
+![](https://github.com/vadimkim/dotmatrix/raw/master/images/single_segment.png "single segment")
+![](https://github.com/vadimkim/dotmatrix/raw/master/images/multi_segment.png "multi segment")
