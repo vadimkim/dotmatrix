@@ -1,5 +1,5 @@
-# dotmatrix
-LCD matrix display font generator and parser
+# Dotmatrix font generator
+LCD matrix display font generator and parser. Suitable for PCD8544 driver. Probably can fit other display types also.
 
 Main features:
 - generates empty matrix for creating fonts from 5x8 to 16x16 pixel size
