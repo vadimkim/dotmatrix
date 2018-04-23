@@ -4,9 +4,9 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
-import javafx.scene.control.Button;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
@@ -39,9 +39,13 @@ public class Controller {
     private TextField hexString;
     @FXML
     private Button drawButton;
+    @FXML
+    private MenuItem aboutDialog;
 
     @FXML
     private void initialize() {
+        // show AboutDialog
+        aboutDialog.setOnAction(event -> showAbout());
 
         // Handle 5x8 radio button event
         rbutton58.setOnAction(event -> createEmptyMatrix(8, 5));
@@ -75,6 +79,21 @@ public class Controller {
     }
 
     /**
+     * Show promotion
+     */
+    private void showAbout() {
+        String uri = "www.ant.ee";
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About author");
+        alert.setHeaderText("");
+        alert.setGraphic(new ImageView(new Image("ant.png")));
+        Hyperlink link = new Hyperlink(uri);
+        link.setOnAction(event -> Main.openURL(uri + "/?dotmatrix"));
+        alert.getDialogPane().contentProperty().set(link);
+        alert.showAndWait();
+    }
+
+    /**
      * Draw empty matrix and register draw events
      *
      * @param rows    number of raws
@@ -82,6 +101,7 @@ public class Controller {
      */
     private void createEmptyMatrix(int rows, int columns) {
         dotMatrix.getChildren().clear();
+        hexString.clear();
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
                 Button btn = new Button();
@@ -146,22 +166,44 @@ public class Controller {
     }
 
     /**
-     * Draw symbol from bytes array
+     * Draw symbol from bytes array. It can be either single segment or 4 segments if number of bytes is
+     * grater than 8
      *
      * @param bytes byte array that encodes symbol
      */
     private void fillMatrixWithDots(byte[] bytes) {
+        int colums = bytes.length;
         if (bytes.length > 8) {
             // there are 4 segments
-            createEmptyMatrix(16, bytes.length / 2);
+            colums = bytes.length / 2;
+            createEmptyMatrix(16, colums);
             drawSegment(0, 0, Arrays.copyOfRange(bytes, 0, bytes.length / 4));
             drawSegment(0, bytes.length / 4, Arrays.copyOfRange(bytes, bytes.length / 4, bytes.length / 2));
             drawSegment(8, 0, Arrays.copyOfRange(bytes, bytes.length / 2, 3 * bytes.length / 4));
             drawSegment(8, bytes.length / 4, Arrays.copyOfRange(bytes, 3 * bytes.length / 4, bytes.length));
         } else {
             // there is only one segment
-            createEmptyMatrix(8, bytes.length);
+            createEmptyMatrix(8, colums);
             drawSegment(bytes);
+        }
+
+        // select radiobutton of corresponding size
+        switch (colums) {
+            case 5: rbutton58.setSelected(true);
+                    break;
+            case 6: rbutton68.setSelected(true);
+                    break;
+            case 7: rbutton78.setSelected(true);
+                    break;
+            case 8: rbutton88.setSelected(true);
+                    break;
+            case 10: rbutton1016.setSelected(true);
+                    break;
+            case 12: rbutton1216.setSelected(true);
+                    break;
+            case 14: rbutton1416.setSelected(true);
+                    break;
+            case 16: rbutton1616.setSelected(true);
         }
     }
 
@@ -183,7 +225,8 @@ public class Controller {
     }
 
     /**
-     * Draw segment based on offset. Top left has 0,0 and bottom right 8, number of columns
+     * Draw segment based on offset. Top left has 0,0 and bottom right 8, number of columns. Used
+     * for multi-segment character
      *
      * @param offsetCol - column offset
      * @param offsetRaw - raw offset
@@ -223,7 +266,9 @@ public class Controller {
     }
 
     /**
-     * Create hex string for selected segment
+     * Create hex string for segment based on offset. Used for multi-segment
+     * hex string calculation
+     *
      * @param offsetCol column offset
      * @param offsetRaw raw offset
      * @return hex string for the segment
@@ -241,7 +286,7 @@ public class Controller {
     }
 
     /**
-     * Return hex string for single segment 8*columns
+     * Calculates hex codes and return string for single segment 8*columns
      * @param segment buttons node list in a segment
      * @return hex string
      */
