@@ -4,11 +4,7 @@
 
 	<groupId>ee.ant</groupId>
 	<artifactId>dotmatrix</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<modules>
-		<module>consoleTest</module>
-	</modules>
-	<packaging>pom</packaging>
+	<version>1.0.0-RELEASE</version>
 
 	<name>DotMatrix</name>
 
@@ -26,6 +22,19 @@
 				<configuration>
 					<source>1.8</source>
 					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<!-- Build an executable JAR -->
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.1.0</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<mainClass>ee.ant.dotmatrix.Main</mainClass>
+						</manifest>
+					</archive>
 				</configuration>
 			</plugin>
 		</plugins>
