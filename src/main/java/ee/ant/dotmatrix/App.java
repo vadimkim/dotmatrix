@@ -10,13 +10,17 @@ import javafx.stage.Stage;
 
 import java.util.Objects;
 
-public class Main extends Application {
+/**
+ * JavaFX App
+ */
+public class App extends Application {
+
     private static HostServices services;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         services = getHostServices();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("main.fxml")));
+        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("primary.fxml")));
         primaryStage.setTitle("Dot matrix font generator");
         primaryStage.getIcons().add(new Image("ant.png"));
         Scene main = new Scene(root, 800, 500);
@@ -32,4 +36,5 @@ public class Main extends Application {
     static void openURL(String uri) {
         services.showDocument(uri);
     }
+
 }

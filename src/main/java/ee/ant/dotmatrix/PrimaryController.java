@@ -10,12 +10,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Controller {
+public class PrimaryController {
 
     @FXML
     private RadioButton rbutton58;
@@ -88,7 +87,7 @@ public class Controller {
         alert.setHeaderText("");
         alert.setGraphic(new ImageView(new Image("ant.png")));
         Hyperlink link = new Hyperlink(uri);
-        link.setOnAction(event -> Main.openURL(uri + "/?dotmatrix"));
+        link.setOnAction(event -> App.openURL(uri + "/?dotmatrix"));
         alert.getDialogPane().contentProperty().set(link);
         alert.showAndWait();
     }
@@ -161,8 +160,8 @@ public class Controller {
                 .replace("0x", "")
                 .replace(",", "")
                 .replace(" ", "");
-        byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);
-        fillMatrixWithDots(bytes);
+       // byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);  TODO refactor
+       // fillMatrixWithDots(bytes);
     }
 
     /**
@@ -190,19 +189,19 @@ public class Controller {
         // select radiobutton of corresponding size
         switch (colums) {
             case 5: rbutton58.setSelected(true);
-                    break;
+                break;
             case 6: rbutton68.setSelected(true);
-                    break;
+                break;
             case 7: rbutton78.setSelected(true);
-                    break;
+                break;
             case 8: rbutton88.setSelected(true);
-                    break;
+                break;
             case 10: rbutton1016.setSelected(true);
-                    break;
+                break;
             case 12: rbutton1216.setSelected(true);
-                    break;
+                break;
             case 14: rbutton1416.setSelected(true);
-                    break;
+                break;
             case 16: rbutton1616.setSelected(true);
         }
     }
