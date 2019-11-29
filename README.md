@@ -10,9 +10,12 @@ Main features:
 - OpenJFX
 
 # Running 
+There are several ways to run the application. If you have JDK installed you can use maven wrapper to compile and run application.
 ```shell script
 ./mvnw javafx:run
 ```
+
+Another way is to download binary package and run shell script `run.sh` or `run.bat` from the command line. 
 # Example sreenshots
 ![](https://github.com/vadimkim/dotmatrix/raw/master/images/single_segment.png "single segment")
 ![](https://github.com/vadimkim/dotmatrix/raw/master/images/multi_segment.png "multi segment")

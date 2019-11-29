@@ -8,10 +8,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Base64;
 import java.util.List;
 
 public class PrimaryController {
@@ -71,7 +72,13 @@ public class PrimaryController {
         rbutton1616.setOnAction(event -> createEmptyMatrix(16, 16));
 
         // Handle draw button event
-        drawButton.setOnAction(event -> parseHexString(hexString.getText()));
+        drawButton.setOnAction(event -> {
+            try {
+                parseHexString(hexString.getText());
+            } catch (DecoderException e) {
+                e.printStackTrace();
+            }
+        });
 
         // default is 5x8 matrix
         createEmptyMatrix(8, 5);
@@ -151,7 +158,7 @@ public class PrimaryController {
      *
      * @param text - line with symbol hex code. Either for single segment or 4 segments
      */
-    private void parseHexString(String text) {
+    private void parseHexString(String text) throws DecoderException {
         // Assume that hex string contains words separated by comas like
         // 0x00, 0x07, 0x05, 0x07, 0x00
         // create corresponding byte[] array
@@ -160,7 +167,8 @@ public class PrimaryController {
                 .replace("0x", "")
                 .replace(",", "")
                 .replace(" ", "");
-        var bytes = Base64.getMimeDecoder().decode(binaryString.getBytes());
+
+        var bytes = Hex.decodeHex(binaryString);
         fillMatrixWithDots(bytes);
     }
 
