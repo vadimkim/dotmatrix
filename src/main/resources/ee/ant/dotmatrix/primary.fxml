@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="508.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ee.ant.dotmatrix.PrimaryController">
+<VBox prefHeight="508.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ee.ant.dotmatrix.PrimaryController">
   <children>
     <MenuBar id="TopMenu" VBox.vgrow="NEVER">
       <menus>
@@ -23,7 +23,7 @@
         </Menu>
       </menus>
     </MenuBar>
-      <Pane id="RootPane" prefHeight="480.0" prefWidth="723.0">
+      <Pane id="RootPane" prefHeight="480.0" prefWidth="480.0">
          <children>
             <Group layoutX="21.0" layoutY="14.0">
                <children>
@@ -43,8 +43,8 @@
             </Group>
             <GridPane id="PixelMatrix" fx:id="dotMatrix" gridLinesVisible="true" layoutX="8.0" layoutY="55.0">
             </GridPane>
-            <TextField id="HexString" fx:id="hexString" layoutX="8.0" layoutY="442.0" prefHeight="26.0" prefWidth="675.0" />
-            <Button fx:id="drawButton" layoutX="705.0" layoutY="443.0" mnemonicParsing="false" text="Draw" />
+            <TextField id="HexString" fx:id="hexString" layoutX="8.0" layoutY="442.0" prefHeight="27.0" prefWidth="600.0" />
+            <Button fx:id="drawButton" layoutX="558.0" layoutY="406.0" mnemonicParsing="false" text="Draw" />
          </children>
       </Pane>
   </children>
