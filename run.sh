@@ -1,2 +1,3 @@
 #!/bin/sh
-java -jar target/dotmatrix-1.0.0-RELEASE.jar 
+./mvnw clean package
+java -jar target/dot-matrix-1.1.0.jar

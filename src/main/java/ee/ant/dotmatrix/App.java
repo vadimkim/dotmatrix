@@ -20,11 +20,11 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         services = getHostServices();
-        Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("primary.fxml")));
+        Parent root = FXMLLoader.load(getClass().getResource("primary.fxml"));
         primaryStage.setTitle("Dot matrix font generator");
-        primaryStage.getIcons().add(new Image("ant.png"));
-        Scene main = new Scene(root, 800, 500);
-        main.getStylesheets().add("styles.css");
+        primaryStage.getIcons().add(new Image("ee/ant/dotmatrix/ant.png"));
+        var main = new Scene(root, 800, 500);
+        main.getStylesheets().add("ee/ant/dotmatrix/styles.css");
         primaryStage.setScene(main);
         primaryStage.show();
     }
