@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="508.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ee.ant.dotmatrix.Controller">
+<VBox prefHeight="508.0" prefWidth="773.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ee.ant.dotmatrix.PrimaryController">
   <children>
     <MenuBar id="TopMenu" VBox.vgrow="NEVER">
       <menus>

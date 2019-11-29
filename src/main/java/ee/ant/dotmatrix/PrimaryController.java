@@ -1,6 +1,5 @@
 package ee.ant.dotmatrix;
 
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
@@ -9,13 +8,14 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 
-import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Controller {
+public class PrimaryController {
 
     @FXML
     private RadioButton rbutton58;
@@ -72,7 +72,13 @@ public class Controller {
         rbutton1616.setOnAction(event -> createEmptyMatrix(16, 16));
 
         // Handle draw button event
-        drawButton.setOnAction(event -> parseHexString(hexString.getText()));
+        drawButton.setOnAction(event -> {
+            try {
+                parseHexString(hexString.getText());
+            } catch (DecoderException e) {
+                e.printStackTrace();
+            }
+        });
 
         // default is 5x8 matrix
         createEmptyMatrix(8, 5);
@@ -82,13 +88,13 @@ public class Controller {
      * Show promotion
      */
     private void showAbout() {
-        String uri = "www.ant.ee";
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        var uri = "www.ant.ee";
+        var alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("About author");
         alert.setHeaderText("");
-        alert.setGraphic(new ImageView(new Image("ant.png")));
-        Hyperlink link = new Hyperlink(uri);
-        link.setOnAction(event -> Main.openURL(uri + "/?dotmatrix"));
+        alert.setGraphic(new ImageView(new Image("ee/ant/dotmatrix/ant.png")));
+        var link = new Hyperlink(uri);
+        link.setOnAction(event -> App.openURL(uri + "/?dotmatrix"));
         alert.getDialogPane().contentProperty().set(link);
         alert.showAndWait();
     }
@@ -104,11 +110,11 @@ public class Controller {
         hexString.clear();
         for (int i = 0; i < columns; i++) {
             for (int j = 0; j < rows; j++) {
-                Button btn = new Button();
+                var btn = new Button();
                 btn.setMinSize(16.0, 16.0);
                 btn.setMaxSize(16.0, 16.0);
                 btn.setOnAction(((ActionEvent click) -> {
-                    ObservableList classes = btn.getStyleClass();
+                    var classes = btn.getStyleClass();
                     if (classes.size() == 1) {
                         btn.getStyleClass().add("buttonOn");
                     } else {
@@ -132,13 +138,13 @@ public class Controller {
     private void drawLines(int columns) {
         // Draw horizontal line
         for (int i = 0; i < columns; i++) {
-            Button btn = (Button) dotMatrix.getChildren().get(2 * i * 8 + 7);
+            var btn = (Button) dotMatrix.getChildren().get(2 * i * 8 + 7);
             btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 0))));
         }
 
         // Draw vertical line
         for (int i = 0; i < 16; i++) {
-            Button btn = (Button) dotMatrix.getChildren().get(i + 8 * columns);
+            var btn = (Button) dotMatrix.getChildren().get(i + 8 * columns);
             if (i == 7) { // One button has both bottom and left lines
                 btn.setBorder(new Border(new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, CornerRadii.EMPTY, new BorderWidths(0, 0, 1, 1))));
             } else {
@@ -152,16 +158,17 @@ public class Controller {
      *
      * @param text - line with symbol hex code. Either for single segment or 4 segments
      */
-    private void parseHexString(String text) {
+    private void parseHexString(String text) throws DecoderException {
         // Assume that hex string contains words separated by comas like
         // 0x00, 0x07, 0x05, 0x07, 0x00
         // create corresponding byte[] array
-        String binaryString = text.replace("{", "")
+        var binaryString = text.replace("{", "")
                 .replace("}", "")
                 .replace("0x", "")
                 .replace(",", "")
                 .replace(" ", "");
-        byte[] bytes = DatatypeConverter.parseHexBinary(binaryString);
+
+        var bytes = Hex.decodeHex(binaryString);
         fillMatrixWithDots(bytes);
     }
 
@@ -172,7 +179,7 @@ public class Controller {
      * @param bytes byte array that encodes symbol
      */
     private void fillMatrixWithDots(byte[] bytes) {
-        int colums = bytes.length;
+        var colums = bytes.length;
         if (bytes.length > 8) {
             // there are 4 segments
             colums = bytes.length / 2;
@@ -190,19 +197,19 @@ public class Controller {
         // select radiobutton of corresponding size
         switch (colums) {
             case 5: rbutton58.setSelected(true);
-                    break;
+                break;
             case 6: rbutton68.setSelected(true);
-                    break;
+                break;
             case 7: rbutton78.setSelected(true);
-                    break;
+                break;
             case 8: rbutton88.setSelected(true);
-                    break;
+                break;
             case 10: rbutton1016.setSelected(true);
-                    break;
+                break;
             case 12: rbutton1216.setSelected(true);
-                    break;
+                break;
             case 14: rbutton1416.setSelected(true);
-                    break;
+                break;
             case 16: rbutton1616.setSelected(true);
         }
     }
@@ -214,7 +221,7 @@ public class Controller {
      */
     private void drawSegment(byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
-            byte column = bytes[i];
+            var column = bytes[i];
             for (int j = 0; j < 8; j++) {
                 if ((column & 1) == 1) {
                     dotMatrix.getChildren().get(i * 8 + j).getStyleClass().add("buttonOn");
@@ -234,7 +241,7 @@ public class Controller {
      */
     private void drawSegment(int offsetCol, int offsetRaw, byte[] bytes) {
         for (int i = 0; i < bytes.length; i++) {
-            byte column = bytes[i];
+            var column = bytes[i];
             for (int j = offsetCol; j < offsetCol + 8; j++) {
                 if ((column & 1) == 1) {
                     dotMatrix.getChildren().get(i * 16 + j + offsetRaw * 16).getStyleClass().add("buttonOn");
@@ -248,7 +255,7 @@ public class Controller {
      * Create font hex string and display it
      */
     private void generateHexString() {
-        StringBuilder hexOut = new StringBuilder();
+        var hexOut = new StringBuilder();
 
         if (dotMatrix.getChildren().size() > 64) {
             // Multi- segment
@@ -261,7 +268,7 @@ public class Controller {
             hexOut.append(getSegmentHex(dotMatrix.getChildren()));
         }
 
-        String out = hexOut.toString();
+        var out = hexOut.toString();
         hexString.setText("{ " + out.substring(0, out.length() - 1) + " }");
     }
 
@@ -275,7 +282,7 @@ public class Controller {
      */
     private char[] readSegment(int offsetCol, int offsetRaw) {
 
-        List<Node> segment = new ArrayList<>();
+        var segment = new ArrayList<Node>();
         for (int i=offsetCol; i < offsetCol + dotMatrix.getChildren().size()/32; i++) {
             for (int j=offsetRaw; j < offsetRaw + 8; j++) {
                 segment.add(dotMatrix.getChildren().get(i*16 + j));
@@ -291,11 +298,11 @@ public class Controller {
      * @return hex string
      */
     private String getSegmentHex(List<Node> segment) {
-        StringBuilder hexOut = new StringBuilder();
+        var hexOut = new StringBuilder();
         // Single segment code
         byte element = 0; // initial byte
         for (int i = 0; i < segment.size(); i++) {
-            Node button = segment.get(i);
+            var button = segment.get(i);
             // reset element each 8 bits
             if (i % 8 == 0) {
                 element = 0;
